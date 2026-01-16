@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Xin Quẻ Đầu Năm</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    /* ======================
+       RESET + BASE
+    ====================== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(circle at top, #ff4d4d, #9b0000);
+      color: #ffd966;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ======================
+       BACKGROUND EFFECT
+    ====================== */
+    .petal {
+      position: fixed;
+      top: -50px;
+      width: 12px;
+      height: 12px;
+      background: gold;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(45deg);
+      opacity: 0.8;
+      animation: fall linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh) rotate(360deg);
+      }
+    }
+
+    /* ======================
+       MAIN CONTAINER
+    ====================== */
+    .container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      width: 90%;
+      max-width: 420px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    }
+
+    /* ======================
+       INCENSE POT (HŨ XĂM)
+    ====================== */
+    .pot-wrapper {
+      margin: 30px auto 20px;
+      width: 200px;
+      height: 200px;
+      position: relative;
+    }
+
+    .pot {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(#8b0000, #5a0000);
+      border-radius: 0 0 30px 30px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .pot::before {
+      content: '';
+      position: absolute;
+      top: -25px;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: #b30000;
+      border-radius: 30px 30px 10px 10px;
+    }
+
+    .shake {
+      animation: shake 0.15s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-3px, 2px) rotate(-2deg); }
+      50% { transform: translate(3px, -2px) rotate(2deg); }
+      75% { transform: translate(-2px, -3px) rotate(-1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    /* ======================
+       FORTUNE STICK
+    ====================== */
+    .stick {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      width: 80%;
+      padding: 15px 10px;
+      background: linear-gradient(#ffe680, #ffcc00);
+      color: #7a0000;
+      border-radius: 8px;
+      opacity: 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      transition: all 1.2s ease;
+      font-weight: 600;
+    }
+
+    .stick.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-140px);
+    }
+
+    /* ======================
+       BUTTONS
+    ====================== */
+    .buttons {
+      margin-top: 30px;
+    }
+
+    button {
+      background: linear-gradient(#ffd966, #ffb700);
+      color: #8b0000;
+      border: none;
+      padding: 12px 22px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      margin: 0 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      transition: transform 0.2s;
+    }
+
+    button:hover { transform: scale(1.05); }
+
+    /* ======================
+       FIREWORK EFFECT
+    ====================== */
+    .firework {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: gold;
+      border-radius: 50%;
+      animation: explode 1.2s ease-out forwards;
+      z-index: 3;
+      box-shadow:
+        0 0 10px gold,
+        0 0 20px gold,
+        0 0 30px orange;
+    }
+
+    @keyframes explode {
+      0% { transform: scale(0.2); opacity: 1; }
+      100% { transform: scale(4); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PETALS -->
+  <script>
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.animationDuration = 6 + Math.random() * 6 + 's';
+      p.style.opacity = Math.random();
+      p.style.transform = `scale(${Math.random() + 0.5})`;
+      document.body.appendChild(p);
+    }
+  </script>
+
+  <div class="container">
+    <h1>🌸 Xin Quẻ Đầu Năm 🌸</h1>
+
+    <div class="pot-wrapper">
+      <div id="pot" class="pot"></div>
+      <div id="stick" class="stick"></div>
+    </div>
+
+    <div class="buttons">
+      <button onclick="drawFortune()">Gieo Quẻ</button>
+      <button onclick="resetFortune()">Gieo Lại</button>
+    </div>
+  </div>
+
+  <script>
+    /* =====================================================
+       PHÁO HOA – KÍCH HOẠT SAU KHI GIEO QUẺ (OFFLINE)
+    ===================================================== */
+    function launchFireworks() {
+      for (let i = 0; i < 18; i++) {
+        const fw = document.createElement('div');
+        fw.className = 'firework';
+        fw.style.left = Math.random() * 100 + 'vw';
+        fw.style.top = Math.random() * 40 + 'vh';
+        document.body.appendChild(fw);
+        setTimeout(() => fw.remove(), 1200);
+      }
+    }
+
+    /* =====================================================
+       DANH SÁCH 30 QUẺ – BẠN CÓ THỂ THAY ĐỔI NỘI DUNG TẠI ĐÂY
+    ===================================================== */
+    const fortunes = [
+      "Quẻ Đại Cát: Tiền vào như nước sông Đà, tiền ra nhỏ giọt như cà phê phin.",
+      "Quẻ Tình Duyên: Năm nay thoát ế, người ấy đang ở rất gần, có thể là... đứa ngồi cạnh.",
+      "Quẻ Tài Lộc: Ví dày cộp, tài khoản nhảy số liên tục, không lo về giá.",
+      "Quẻ Sự Nghiệp: Vạn sự hanh thông, sếp thương, lương tăng, đồng nghiệp nết na.",
+      "Quẻ Sức Khỏe: Body chuẩn chỉnh, tinh thần phơi phới, ăn ngon ngủ kỹ là tiên.",
+      "Quẻ Xuất Hành: Passport chuẩn bị hết trang vì năm nay bạn đi du lịch quá nhiều.",
+      "Quẻ May Mắn: Ra đường gặp quý nhân, về nhà có người thương, đi làm có thưởng lớn.",
+      "Quẻ Học Hành: Học đâu nhớ đó, thi đâu đậu đó, cá chép hóa rồng rực rỡ.",
+      "Quẻ Bình An: Một năm không drama, tâm hồn thư thái, ngủ ngon mỗi đêm.",
+      "Quẻ Sáng Tạo: Ý tưởng tuôn trào như thác đổ, làm gì cũng ra cái hay cái mới.",
+      "Quẻ Quý Nhân: Khó khăn có người giúp, lo lắng có người chia, vạn sự đều hóa cát.",
+      "Quẻ Niềm Vui: Mỗi ngày là một nụ cười, 365 ngày ngập tràn niềm hạnh phúc.",
+      "Quẻ Tài chính: Của cải dồi dào, đầu tư đâu thắng đó, tiền tiêu không phải nghĩ.",
+      "Quẻ Tình Cảm: Gia đình hòa thuận, anh em êm ấm, tình cảm đi lên như diều gặp gió.",
+      "Quẻ Thăng Tiến: Vị trí mới, tầm cao mới, năm nay bạn là ngôi sao sáng nhất công ty.",
+      "Quẻ Sắc Đẹp: Càng ngày càng trẻ trung, nhan sắc thăng hạng, vạn người mê đắm.",
+      "Quẻ Ăn Uống: Năm nay có số hưởng lộc ăn, đi đâu cũng được mời tiệc tùng linh đình.",
+      "Quẻ Kết Nối: Gặp thêm nhiều bạn tốt, mở rộng quan hệ, ai cũng yêu mến bạn.",
+      "Quẻ Bình Yên: Sống giữa yêu thương, không vướng bận ưu phiền, vạn sự tùy duyên.",
+      "Quẻ Đột Phá: Một năm có sự thay đổi lớn theo hướng tích cực, bước ngoặt cuộc đời.",
+      "Quẻ Ý Nguyện: Điều bạn đang mong ước bấy lâu sẽ sớm trở thành hiện thực.",
+      "Quẻ Năng Lượng: Sức mạnh tràn đầy, vượt qua mọi thử thách chỉ bằng một cái búng tay.",
+      "Quẻ Tụ Tài: Tiền bạc tích tụ, không bị thất thoát, cuối năm dư dả mua sắm thả ga.",
+      "Quẻ Hỷ Sự: Trong nhà có tin vui, đám cưới hoặc thêm thành viên mới sắp tới.",
+      "Quẻ Thông Thái: Trí tuệ sáng suốt, quyết định điều gì cũng chính xác và thành công.",
+      "Quẻ Tự Do: Một năm sống cho bản thân nhiều hơn, làm những điều mình thích.",
+      "Quẻ Thuận Lợi: Đi đâu cũng được ưu tiên, làm gì cũng có người nhường nhịn, giúp đỡ.",
+      "Quẻ Bất Ngờ: Sẽ có một món quà cực lớn từ phương xa gửi đến bạn trong năm nay.",
+      "Quẻ Kiên Trì: Mọi nỗ lực của bạn trong năm cũ sẽ được đền đáp xứng đáng vào năm nay.",
+      "Quẻ Viên Mãn: Một năm tròn trịa về cả tình cảm, sức khỏe lẫn tiền bạc."
+    ];
+
+    const pot = document.getElementById('pot');
+    const stick = document.getElementById('stick');
+
+    function drawFortune() {
+      stick.classList.remove('show');
+      pot.classList.add('shake');
+
+      setTimeout(() => {
+        pot.classList.remove('shake');
+        const random = fortunes[Math.floor(Math.random() * fortunes.length)];
+        stick.textContent = random;
+        stick.classList.add('show');
+        launchFireworks();
+      }, 1500);
+    }
+
+    function resetFortune() {
+      stick.classList.remove('show');
+      stick.textContent = '';
+    }
+  </script>
+</body>
+</html>
